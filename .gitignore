@@ -1,0 +1,6 @@
+.env
+.env.local
+tmp/
+main.exe/main
+vendor/
+.vscode/.idea/
