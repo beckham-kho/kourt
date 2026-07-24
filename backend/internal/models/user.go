@@ -13,7 +13,6 @@ type User struct {
 	ID           string    `json:"id"`
 	Name         string    `json:"name"`
 	Email        string    `json:"email"`
-	PhoneNumber  string    `json:"phone_number"`
 	PasswordHash string    `json:"-"`
 	Role         Role      `json:"role"`
 	AvatarURL    string    `json:"avatar_url"`
@@ -26,7 +25,6 @@ type User struct {
 type RegisterInput struct {
 	Name        string `json:"name"`
 	Email       string `json:"email"`
-	PhoneNumber string `json:"phone_number"`
 	Password    string `json:"password"`
 	Role        Role   `json:"role"`
 }

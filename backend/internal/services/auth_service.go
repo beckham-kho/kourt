@@ -30,12 +30,12 @@ func NewAuthService(userRepo repositories.UserRepository, sessionRepo repositori
 
 func (s *AuthService) Register(input models.RegisterInput) (*models.User, error) {
 	if input.Role != models.RoleCustomer && input.Role != models.RoleProvider {
-		return nil, errors.New("role tidak valid")
+		return nil, errors.New("Role tidak valid")
 	}
 
 	existing, _ := s.userRepo.FindByEmail(input.Email)
 	if existing != nil {
-		return nil, errors.New("email sudah terdaftar")
+		return nil, errors.New("Email sudah terdaftar")
 	}
 
 	hashed, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
@@ -46,7 +46,6 @@ func (s *AuthService) Register(input models.RegisterInput) (*models.User, error)
 	user := &models.User{
 		Name:         input.Name,
 		Email:        input.Email,
-		PhoneNumber:  input.PhoneNumber,
 		PasswordHash: string(hashed),
 		Role:         input.Role,
 	}
@@ -61,15 +60,15 @@ func (s *AuthService) Register(input models.RegisterInput) (*models.User, error)
 func (s *AuthService) Login(ctx context.Context, input models.LoginInput) (*models.User, *models.AuthTokens, error) {
 	user, err := s.userRepo.FindByEmail(input.Email)
 	if err != nil {
-		return nil, nil, errors.New("email atau password salah")
+		return nil, nil, errors.New("Email atau password salah")
 	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(input.Password)); err != nil {
-		return nil, nil, errors.New("email atau password salah")
+		return nil, nil, errors.New("Email atau password salah")
 	}
 
 	if !user.IsActive {
-		return nil, nil, errors.New("akun tidak aktif")
+		return nil, nil, errors.New("Akun tidak aktif")
 	}
 
 	tokens, err := s.issueTokens(ctx, user)
@@ -104,7 +103,7 @@ func (s *AuthService) issueTokens(ctx context.Context, user *models.User) (*mode
 func (s *AuthService) RefreshToken(ctx context.Context, refreshTokenString string) (*models.AuthTokens, error) {
 	claims, err := utils.ParseToken(refreshTokenString, s.cfg.JWTRefreshSecret)
 	if err != nil {
-		return nil, errors.New("refresh token tidak valid")
+		return nil, errors.New("Refresh token tidak valid")
 	}
 
 	valid, err := s.sessionRepo.IsRefreshTokenValid(ctx, claims.UserID, claims.JTI)
@@ -112,12 +111,12 @@ func (s *AuthService) RefreshToken(ctx context.Context, refreshTokenString strin
 		return nil, err
 	}
 	if !valid {
-		return nil, errors.New("refresh token sudah tidak berlaku")
+		return nil, errors.New("Refresh token sudah tidak berlaku")
 	}
 
 	user, err := s.userRepo.FindByID(claims.UserID)
 	if err != nil {
-		return nil, errors.New("user tidak ditemukan")
+		return nil, errors.New("User tidak ditemukan")
 	}
 
 	return s.issueTokens(ctx, user)

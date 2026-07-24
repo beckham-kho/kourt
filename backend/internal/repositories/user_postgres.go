@@ -16,23 +16,23 @@ func NewUserPostgres(db *sql.DB) *UserPostgres {
 
 func (r *UserPostgres) Create(user *models.User) error {
 	query := `
-		INSERT INTO users (name, email, phone_number, password_hash, role)
-		VALUES ($1, $2, $3, $4, $5)
+		INSERT INTO users (name, email, password_hash, role)
+		VALUES ($1, $2, $3, $4)
 		RETURNING id, avatar_url, is_verified, is_active, created_at, updated_at
 	`
 	return r.db.QueryRow(
-		query, user.Name, user.Email, user.PhoneNumber, user.PasswordHash, user.Role,
+		query, user.Name, user.Email, user.PasswordHash, user.Role,
 	).Scan(&user.ID, &user.AvatarURL, &user.IsVerified, &user.IsActive, &user.CreatedAt, &user.UpdatedAt)
 }
 
 func (r *UserPostgres) FindByEmail(email string) (*models.User, error) {
 	query := `
-		SELECT id, name, email, phone_number, password_hash, role, avatar_url, is_verified, is_active, created_at, updated_at
+		SELECT id, name, email, password_hash, role, avatar_url, is_verified, is_active, created_at, updated_at
 		FROM users WHERE email = $1
 	`
 	var u models.User
 	err := r.db.QueryRow(query, email).Scan(
-		&u.ID, &u.Name, &u.Email, &u.PhoneNumber, &u.PasswordHash, &u.Role,
+		&u.ID, &u.Name, &u.Email, &u.PasswordHash, &u.Role,
 		&u.AvatarURL, &u.IsVerified, &u.IsActive, &u.CreatedAt, &u.UpdatedAt,
 	)
 	if err != nil {
@@ -43,12 +43,12 @@ func (r *UserPostgres) FindByEmail(email string) (*models.User, error) {
 
 func (r *UserPostgres) FindByID(id string) (*models.User, error) {
 	query := `
-		SELECT id, name, email, phone_number, password_hash, role, avatar_url, is_verified, is_active, created_at, updated_at
+		SELECT id, name, email, password_hash, role, avatar_url, is_verified, is_active, created_at, updated_at
 		FROM users WHERE id = $1
 	`
 	var u models.User
 	err := r.db.QueryRow(query, id).Scan(
-		&u.ID, &u.Name, &u.Email, &u.PhoneNumber, &u.PasswordHash, &u.Role,
+		&u.ID, &u.Name, &u.Email, &u.PasswordHash, &u.Role,
 		&u.AvatarURL, &u.IsVerified, &u.IsActive, &u.CreatedAt, &u.UpdatedAt,
 	)
 	if err != nil {
