@@ -29,7 +29,7 @@ func NewAuthService(userRepo repositories.UserRepository, sessionRepo repositori
 }
 
 func (s *AuthService) Register(input models.RegisterInput) (*models.User, error) {
-	if input.Role != models.RoleCustomer && input.Role != models.RoleProvider {
+	if input.Role != models.RoleCustomer && input.Role != models.RoleRenter {
 		return nil, errors.New("Role tidak valid")
 	}
 

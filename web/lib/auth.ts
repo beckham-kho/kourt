@@ -14,7 +14,7 @@ interface User {
   id: string;
   name: string;
   email: string;
-  role: "customer" | "provider";
+  role: "customer" | "renter";
 }
 
 export async function loginUser(input: LoginInput) {
@@ -28,7 +28,7 @@ export async function registerUser(input: {
   name: string;
   email: string;
   password: string;
-  role: "customer" | "provider";
+  role: "customer" | "renter";
 }) {
   return apiFetch<User>("/auth/register", {
     method: "POST",

@@ -6,7 +6,7 @@ type Role string
 
 const (
 	RoleCustomer Role = "customer"
-	RoleProvider Role = "provider"
+	RoleRenter Role = "renter"
 )
 
 type User struct {

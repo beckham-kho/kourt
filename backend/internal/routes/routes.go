@@ -19,5 +19,5 @@ func SetupRoutes(app *fiber.App, courtHandler *handlers.CourtHandler, authHandle
 
 	courts := api.Group("/courts")
 	courts.Get("/", courtHandler.GetAllCourts)
-	courts.Post("/", middleware.RequireAuth(jwtAccessSecret, sessionRepo), middleware.RequireRole("provider"), courtHandler.GetAllCourts)
+	courts.Post("/", middleware.RequireAuth(jwtAccessSecret, sessionRepo), middleware.RequireRole("renter"), courtHandler.GetAllCourts)
 }

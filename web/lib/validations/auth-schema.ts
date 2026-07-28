@@ -21,8 +21,8 @@ export const registerSchema = z.object({
     .min(8, "Password minimal 8 karakter")
     .regex(/[A-Z]/, "Password harus mengandung huruf besar")
     .regex(/[0-9]/, "Password harus mengandung angka"),
-  role: z.enum(["customer", "provider"], {
-    message: "Role harus 'customer' atau 'provider'",
+  role: z.enum(["customer", "renter"], {
+    message: "Role harus 'customer' atau 'renter'",
   }),
 });
 
