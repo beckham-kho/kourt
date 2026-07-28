@@ -69,8 +69,9 @@ export default function Footer() {
             </div>
 
             <p className="text-muted-foreground text-center md:text-left text-sm px-3 md:px-0">
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Culpa,
-              eligendi.
+              Kourt adalah proyek pembelajaran developer. Seluruh data,
+              lapangan, dan transaksi yang ditampilkan bersifat fiktif dan tidak
+              untuk tujuan komersial.
             </p>
           </div>
 
