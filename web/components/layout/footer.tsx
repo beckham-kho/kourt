@@ -37,7 +37,7 @@ const socialLinks = [
 export default function Footer() {
   return (
     <footer>
-      <div className="w-full flex flex-col items-center gap-5 pt-7 lg:pt-10">
+      <div className="w-full flex flex-col items-center gap-5 pt-7 pb-26 md:pb-0 lg:pt-10">
         <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-10 md:px-10 lg:px-20">
           <div className="flex flex-col items-center md:items-start gap-5 info-social-media">
             <Link href="/" className="flex items-center shrink-0">

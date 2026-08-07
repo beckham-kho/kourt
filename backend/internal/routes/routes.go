@@ -8,7 +8,7 @@ import (
 	"github.com/beckham-kho/kourt/internal/repositories"
 )
 
-func SetupRoutes(app *fiber.App, courtHandler *handlers.CourtHandler, authHandler *handlers.AuthHandler, jwtAccessSecret string, sessionRepo repositories.SessionRepository) {
+func SetupRoutes(app *fiber.App, courtHandler *handlers.CourtsHandler, authHandler *handlers.AuthHandler, reviewHandler *handlers.ReviewHandler, jwtAccessSecret string, sessionRepo repositories.SessionRepository) {
 	api := app.Group("/api/v1")
 
 	auth := api.Group("/auth")
@@ -19,5 +19,11 @@ func SetupRoutes(app *fiber.App, courtHandler *handlers.CourtHandler, authHandle
 
 	courts := api.Group("/courts")
 	courts.Get("/", courtHandler.GetAllCourts)
+	courts.Get("/:id", courtHandler.GetCourtByID)
 	courts.Post("/", middleware.RequireAuth(jwtAccessSecret, sessionRepo), middleware.RequireRole("renter"), courtHandler.GetAllCourts)
+	courts.Post("/:id/image", middleware.RequireAuth(jwtAccessSecret, sessionRepo), middleware.RequireRole("renter"), courtHandler.UploadCourtImage)
+	courts.Delete("/:id/image/:imageId", middleware.RequireAuth(jwtAccessSecret, sessionRepo), middleware.RequireRole("renter"), courtHandler.DeleteCourtImage)
+
+	courts.Get("/:id/reviews", reviewHandler.GetCourtReviews)
+	courts.Get("/:id/reviews/summary", reviewHandler.GetCourtRatingSummary)
 }

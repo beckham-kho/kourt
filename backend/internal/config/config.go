@@ -24,6 +24,13 @@ type Config struct {
 	JWTRefreshSecret string
 	AccessTokenTTL   time.Duration
 	RefreshTokenTTL  time.Duration
+
+	StorageEndpoint       string
+	StoragePublicEndpoint string
+	StorageAccessKey 			string
+	StorageSecretKey 			string
+	StorageBucket    			string
+	StorageRegion    			string
 }
 
 func LoadConfig() *Config {
@@ -45,6 +52,13 @@ func LoadConfig() *Config {
 		JWTRefreshSecret: getEnv("JWT_REFRESH_SECRET", ""),
 		AccessTokenTTL:   15 * time.Minute,
 		RefreshTokenTTL:  7 * 24 * time.Hour,
+
+		StorageEndpoint:       getEnv("STORAGE_API_ENDPOINT", "http://localhost:3900"),
+		StoragePublicEndpoint: getEnv("STORAGE_PUBLIC_ENDPOINT", "http://localhost:3902"),
+		StorageAccessKey: getEnv("STORAGE_ACCESS_KEY", ""),
+		StorageSecretKey: getEnv("STORAGE_SECRET_KEY", ""),
+		StorageBucket:    getEnv("STORAGE_BUCKET", "kourt-storage"),
+		StorageRegion:    getEnv("STORAGE_REGION", "garage"),
 	}
 }
 

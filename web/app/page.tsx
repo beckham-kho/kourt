@@ -18,7 +18,7 @@ const features = [
   {
     image: "/illustrations/sport-tracking.svg",
     description:
-      "Pantau jadwal bookingmu, lihat riwayat booking, dan dapatkan notifikasi. Semua dalam satu tempat.",
+      "Pantau jadwal bookingmu, lihat riwayat booking, dan dapatkan notifikasi. Semua dalam satu aplikasi.",
   },
 ];
 
@@ -53,7 +53,7 @@ export default function LandingPage() {
         <div className="gap-7 flex flex-col justify-center items-center md:items-start">
           <div className="flex flex-col gap-2 text-center md:text-left leading-tight">
             <h1 className="font-extrabold whitespace-nowrap text-[clamp(1.75rem,8.5vw,3.5rem)] md:text-4xl lg:text-6xl">
-              Book Your Court,
+              Book Your Courts,
             </h1>
             <h1 className="font-extrabold whitespace-nowrap text-[clamp(1.75rem,8.5vw,3.5rem)] md:text-4xl lg:text-6xl">
               Own the Game
@@ -87,7 +87,7 @@ export default function LandingPage() {
       <section>
         <div className="flex flex-col gap-14 items-center w-full bg-primary rounded-3xl px-5 md:px-10 lg:px-30 py-20">
           <h1 className="font-extrabold text-4xl md:text-4xl lg:text-5xl text-center px-5 text-primary-foreground">
-            Olahraga Jadi Lebih Menyenangkan
+            Olahraga Jadi Lebih Mudah
           </h1>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full">
             {features.map((feature, index) => (

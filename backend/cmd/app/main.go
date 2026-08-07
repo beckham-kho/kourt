@@ -31,14 +31,20 @@ func main() {
 	redisClient := config.ConnectRedis(cfg)
 	defer redisClient.Close()
 
-	courtRepo := repositories.NewCourtPostgres(db)
-	courtService := services.NewCourtService(courtRepo)
-	courtHandler := handlers.NewCourtHandler(courtService)
+	storageClient := config.ConnectStorage(cfg)
+	storageRepo := repositories.NewStorageGarage(storageClient, cfg.StorageBucket, cfg.StoragePublicEndpoint)
+	courtsRepo := repositories.NewCourtsPostgres(db)
+	courtsService := services.NewCourtService(courtsRepo, storageRepo)
+	courtsHandler := handlers.NewCourtsHandler(courtsService)
 
 	userRepo := repositories.NewUserPostgres(db)
 	sessionRepo := repositories.NewSessionRedis(redisClient)
 	authService := services.NewAuthService(userRepo, sessionRepo, cfg)
 	authHandler := handlers.NewAuthHandler(authService, cfg.JWTAccessSecret)
+
+	reviewRepo := repositories.NewReviewPostgres(db)
+	reviewService := services.NewReviewService(reviewRepo)
+	reviewHandler := handlers.NewReviewHandler(reviewService)
 
 	app := fiber.New()
 	app.Use(logger.New())
@@ -49,7 +55,7 @@ func main() {
 		AllowCredentials: true,
 	}))
 
-	routes.SetupRoutes(app, courtHandler, authHandler, cfg.JWTAccessSecret, sessionRepo)
+	routes.SetupRoutes(app, courtsHandler, authHandler, reviewHandler, cfg.JWTAccessSecret, sessionRepo)
 
 	log.Printf("🚀 Server berjalan di port %s", cfg.AppPort)
 	if err := app.Listen(":" + cfg.AppPort); err != nil {
