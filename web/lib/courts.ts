@@ -20,7 +20,6 @@ export async function getCourts(search?: string): Promise<Court[]> {
     throw new Error(result.message || "Gagal mengambil data lapangan");
   }
 
-  console.log(result.data);
   return result.data ?? [];
 }
 

@@ -14,6 +14,7 @@ func SetupRoutes(app *fiber.App, courtHandler *handlers.CourtsHandler, authHandl
 	auth := api.Group("/auth")
 	auth.Post("/register", authHandler.Register)
 	auth.Post("/login", authHandler.Login)
+	auth.Get("/me", middleware.RequireAuth(jwtAccessSecret, sessionRepo), authHandler.Me)
 	auth.Post("/refresh", authHandler.Refresh)
 	auth.Post("/logout", middleware.RequireAuth(jwtAccessSecret, sessionRepo), authHandler.Logout)
 

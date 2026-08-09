@@ -3,6 +3,7 @@ import Navbar from "@/components/layout/navbar";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
+import { getCurrentUser } from "@/lib/auth-server";
 
 const features = [
   {
@@ -45,10 +46,13 @@ const advantages = [
   },
 ];
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  const user = await getCurrentUser();
+
   return (
     <div className="min-h-screen w-full flex flex-col">
-      <Navbar />
+      <Navbar user={user} />
+
       <section className="grid md:grid-cols-2 h-[80dvh] md:h-[50dvh] lg:h-[80dvh] px-10 md:px-20 lg:px-30">
         <div className="gap-7 flex flex-col justify-center items-center md:items-start">
           <div className="flex flex-col gap-2 text-center md:text-left leading-tight">

@@ -14,6 +14,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import UserMenu from "@/components/layout/user-menu";
+import { CurrentUser } from "@/lib/auth-server";
 
 const navItems = [
   { label: "Cari Lapangan", href: "/courts" },
@@ -21,7 +23,7 @@ const navItems = [
   { label: "Tentang Kami", href: "/about" },
 ];
 
-export default function Navbar() {
+export default function Navbar({ user }: { user: CurrentUser | null }) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -67,15 +69,21 @@ export default function Navbar() {
           </NavigationMenuList>
         </NavigationMenu>
 
-        <Button
-          className="font-semibold"
-          variant="ghost"
-          render={<Link href="/login">Login</Link>}
-        />
-        <Button
-          className="font-semibold"
-          render={<Link href="/register">Daftar</Link>}
-        />
+        {user ? (
+          <UserMenu name={user.name} avatarUrl={user.avatar_url} />
+        ) : (
+          <>
+            <Button
+              className="font-semibold"
+              variant="ghost"
+              render={<Link href="/login">Login</Link>}
+            />
+            <Button
+              className="font-semibold"
+              render={<Link href="/register">Daftar</Link>}
+            />
+          </>
+        )}
       </div>
 
       <div className="lg:hidden">
@@ -109,20 +117,41 @@ export default function Navbar() {
                   </Link>
                 </div>
               ))}
-              <Link
-                href="/login"
-                onClick={() => setOpen(false)}
-                className="text-sm"
-              >
-                Login
-              </Link>
-              <Link
-                href="/register"
-                onClick={() => setOpen(false)}
-                className="text-sm"
-              >
-                Daftar
-              </Link>
+              {user ? (
+                <>
+                  <Link
+                    href="/profile"
+                    onClick={() => setOpen(false)}
+                    className="text-sm"
+                  >
+                    Profil
+                  </Link>
+                  <Link
+                    href="/settings"
+                    onClick={() => setOpen(false)}
+                    className="text-sm"
+                  >
+                    Pengaturan
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href="/login"
+                    onClick={() => setOpen(false)}
+                    className="text-sm"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    href="/register"
+                    onClick={() => setOpen(false)}
+                    className="text-sm"
+                  >
+                    Daftar
+                  </Link>
+                </>
+              )}
             </div>
           </SheetContent>
         </Sheet>

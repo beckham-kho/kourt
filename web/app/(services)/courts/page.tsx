@@ -3,6 +3,7 @@ import CourtSearchBar from "@/components/courts/court-search-bar";
 import CourtCard from "@/components/courts/court-card";
 import { getCourts } from "@/lib/courts";
 import Footer from "@/components/layout/footer";
+import { getCurrentUser } from "@/lib/auth-server";
 
 export default async function CourtsPage({
   searchParams,
@@ -12,9 +13,12 @@ export default async function CourtsPage({
   const { q } = await searchParams;
   const courts = await getCourts(q);
 
+  const user = await getCurrentUser();
+
   return (
     <>
-      <Navbar />
+      <Navbar user={user} />
+
       <section className="flex flex-col bg-primary h-[20dvh] items-center justify-center px-5">
         <CourtSearchBar />
       </section>

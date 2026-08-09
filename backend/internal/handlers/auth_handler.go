@@ -50,6 +50,24 @@ func (h *AuthHandler) Login(c *fiber.Ctx) error {
 	})
 }
 
+func (h *AuthHandler) Me(c *fiber.Ctx) error {
+	userID := c.Locals("user_id").(string)
+
+	user, err := h.authService.GetProfile(userID)
+	if err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"success": false,
+			"message": "User tidak ditemukan",
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"success": true,
+		"message": "Berhasil mengambil data profil",
+		"data":    user,
+	})
+}
+
 func (h *AuthHandler) Refresh(c *fiber.Ctx) error {
 	var body struct {
 		RefreshToken string `json:"refresh_token"`

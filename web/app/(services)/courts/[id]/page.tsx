@@ -19,6 +19,7 @@ import CourtReviewsList from "@/components/courts/court-reviews-list";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getCurrentUser } from "@/lib/auth-server";
 
 const FACILITY_ICONS: Record<string, LucideIcon> = {
   "shower-head": ShowerHead,
@@ -54,9 +55,11 @@ export default async function CourtDetailPage({
     notFound();
   }
 
+  const user = await getCurrentUser();
+
   return (
     <>
-      <Navbar />
+      <Navbar user={user} />
 
       <section className="flex flex-row md:px-10 lg:px-20 md:pt-7 pb-3 md:pb-2">
         <CourtGallery images={court.images} courtName={court.name} />

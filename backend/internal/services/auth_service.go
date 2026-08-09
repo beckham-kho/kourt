@@ -79,6 +79,10 @@ func (s *AuthService) Login(ctx context.Context, input models.LoginInput) (*mode
 	return user, tokens, nil
 }
 
+func (s *AuthService) GetProfile(userID string) (*models.User, error) {
+	return s.userRepo.FindByID(userID)
+}
+
 func (s *AuthService) issueTokens(ctx context.Context, user *models.User) (*models.AuthTokens, error) {
 	accessJTI := uuid.NewString()
 	refreshJTI := uuid.NewString()
