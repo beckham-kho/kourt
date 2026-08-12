@@ -51,7 +51,7 @@ export default function LoginPage() {
       }
 
       toast.success("Login berhasil!", { position: "top-right" });
-      router.push("/home");
+      router.push("/dashboard");
     } catch (err) {
       toast.error("Terjadi kesalahan, coba lagi", { position: "top-right" });
     } finally {

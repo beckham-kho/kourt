@@ -8,7 +8,7 @@ import (
 	"github.com/beckham-kho/kourt/internal/repositories"
 )
 
-func SetupRoutes(app *fiber.App, courtHandler *handlers.CourtsHandler, authHandler *handlers.AuthHandler, reviewHandler *handlers.ReviewHandler, jwtAccessSecret string, sessionRepo repositories.SessionRepository) {
+func SetupRoutes(app *fiber.App, courtHandler *handlers.CourtsHandler, authHandler *handlers.AuthHandler, reviewHandler *handlers.ReviewHandler, bookingHandler *handlers.BookingHandler, jwtAccessSecret string, sessionRepo repositories.SessionRepository) {
 	api := app.Group("/api/v1")
 
 	auth := api.Group("/auth")
@@ -24,6 +24,14 @@ func SetupRoutes(app *fiber.App, courtHandler *handlers.CourtsHandler, authHandl
 	courts.Post("/", middleware.RequireAuth(jwtAccessSecret, sessionRepo), middleware.RequireRole("renter"), courtHandler.GetAllCourts)
 	courts.Post("/:id/image", middleware.RequireAuth(jwtAccessSecret, sessionRepo), middleware.RequireRole("renter"), courtHandler.UploadCourtImage)
 	courts.Delete("/:id/image/:imageId", middleware.RequireAuth(jwtAccessSecret, sessionRepo), middleware.RequireRole("renter"), courtHandler.DeleteCourtImage)
+
+	bookings := api.Group("/bookings")
+	bookings.Post("/", middleware.RequireAuth(jwtAccessSecret, sessionRepo), middleware.RequireRole("customer"), bookingHandler.CreateBooking)
+	bookings.Get("/my", middleware.RequireAuth(jwtAccessSecret, sessionRepo), bookingHandler.GetMyBookings)
+	bookings.Get("/owner", middleware.RequireAuth(jwtAccessSecret, sessionRepo), middleware.RequireRole("renter"), bookingHandler.GetOwnerBookings)
+	bookings.Get("/owner/schedule", middleware.RequireAuth(jwtAccessSecret, sessionRepo), middleware.RequireRole("renter"), bookingHandler.GetWeeklySchedule)
+	bookings.Get("/owner/stats", middleware.RequireAuth(jwtAccessSecret, sessionRepo), middleware.RequireRole("renter"), bookingHandler.GetStats)
+	bookings.Patch("/:id/status", middleware.RequireAuth(jwtAccessSecret, sessionRepo), middleware.RequireRole("renter"), bookingHandler.UpdateBookingStatus)
 
 	courts.Get("/:id/reviews", reviewHandler.GetCourtReviews)
 	courts.Get("/:id/reviews/summary", reviewHandler.GetCourtRatingSummary)

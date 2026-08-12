@@ -22,6 +22,12 @@ interface ApiResponse<T> {
   data: T;
 }
 
+export async function getAccessToken(): Promise<string | null> {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("access_token")?.value;
+  return token ?? null;
+}
+
 export async function getCurrentUser(): Promise<CurrentUser | null> {
   const cookieStore = await cookies();
   const token = cookieStore.get("access_token")?.value;

@@ -46,6 +46,10 @@ func main() {
 	reviewService := services.NewReviewService(reviewRepo)
 	reviewHandler := handlers.NewReviewHandler(reviewService)
 
+	bookingRepo := repositories.NewBookingPostgres(db)
+	bookingService := services.NewBookingService(bookingRepo, courtsRepo)
+	bookingHandler := handlers.NewBookingHandler(bookingService)
+
 	app := fiber.New()
 	app.Use(logger.New())
 	app.Use(cors.New(cors.Config{
@@ -55,7 +59,7 @@ func main() {
 		AllowCredentials: true,
 	}))
 
-	routes.SetupRoutes(app, courtsHandler, authHandler, reviewHandler, cfg.JWTAccessSecret, sessionRepo)
+	routes.SetupRoutes(app, courtsHandler, authHandler, reviewHandler, bookingHandler, cfg.JWTAccessSecret, sessionRepo)
 
 	log.Printf("🚀 Server berjalan di port %s", cfg.AppPort)
 	if err := app.Listen(":" + cfg.AppPort); err != nil {
