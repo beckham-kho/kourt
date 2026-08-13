@@ -5,6 +5,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 
+	"github.com/beckham-kho/kourt/internal/models"
 	"github.com/beckham-kho/kourt/internal/services"
 )
 
@@ -14,6 +15,71 @@ type CourtsHandler struct {
 
 func NewCourtsHandler(service *services.CourtService) *CourtsHandler {
 	return &CourtsHandler{service: service}
+}
+
+func (h *CourtsHandler) CreateCourt(c *fiber.Ctx) error {
+	ownerID := c.Locals("user_id").(string)
+
+	var input models.CreateCourtInput
+	if err := c.BodyParser(&input); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": false, "message": "Body tidak valid",
+		})
+	}
+
+	if input.Name == "" || input.Price <= 0 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": false, "message": "Nama dan harga wajib diisi",
+		})
+	}
+
+	court, err := h.service.CreateCourt(ownerID, input)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"success": false, "message": "Gagal menambah lapangan", "error": err.Error(),
+		})
+	}
+
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
+		"success": true, "message": "Lapangan berhasil ditambahkan", "data": court,
+	})
+}
+
+func (h *CourtsHandler) DeleteCourt(c *fiber.Ctx) error {
+	ownerID := c.Locals("user_id").(string)
+	courtID := c.Params("id")
+
+	if err := h.service.DeleteCourt(courtID, ownerID); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": false, "message": err.Error(),
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"success": true, "message": "Lapangan berhasil dihapus",
+	})
+}
+
+func (h *CourtsHandler) UpdateCourt(c *fiber.Ctx) error {
+	ownerID := c.Locals("user_id").(string)
+	courtID := c.Params("id")
+
+	var input models.UpdateCourtInput
+	if err := c.BodyParser(&input); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": false, "message": "Body tidak valid",
+		})
+	}
+
+	if err := h.service.UpdateCourt(courtID, ownerID, input); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": false, "message": err.Error(),
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"success": true, "message": "Lapangan berhasil diperbarui",
+	})
 }
 
 func (h *CourtsHandler) GetAllCourts(c *fiber.Ctx) error {
@@ -49,6 +115,21 @@ func (h *CourtsHandler) GetCourtByID(c *fiber.Ctx) error {
 		"success": true,
 		"message": "Berhasil mengambil detail lapangan",
 		"data":    court,
+	})
+}
+
+func (h *CourtsHandler) GetMyCourts(c *fiber.Ctx) error {
+	ownerID := c.Locals("user_id").(string)
+
+	courts, err := h.service.GetCourtsByOwner(ownerID)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"success": false, "message": "Gagal mengambil data lapangan",
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"success": true, "message": "Berhasil mengambil lapangan", "data": courts,
 	})
 }
 
@@ -102,5 +183,29 @@ func (h *CourtsHandler) DeleteCourtImage(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"success": true,
 		"message": "Gambar berhasil dihapus",
+	})
+}
+
+func (h *CourtsHandler) ToggleCourtActive(c *fiber.Ctx) error {
+	ownerID := c.Locals("user_id").(string)
+	courtID := c.Params("id")
+
+	var input struct {
+		IsActive bool `json:"is_active"`
+	}
+	if err := c.BodyParser(&input); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": false, "message": "Body tidak valid",
+		})
+	}
+
+	if err := h.service.ToggleCourtActive(courtID, ownerID, input.IsActive); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": false, "message": err.Error(),
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"success": true, "message": "Status lapangan berhasil diperbarui",
 	})
 }

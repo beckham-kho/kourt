@@ -37,6 +37,8 @@ func main() {
 	courtsService := services.NewCourtService(courtsRepo, storageRepo)
 	courtsHandler := handlers.NewCourtsHandler(courtsService)
 
+	uploadHandler := handlers.NewUploadHandler(storageRepo)
+
 	userRepo := repositories.NewUserPostgres(db)
 	sessionRepo := repositories.NewSessionRedis(redisClient)
 	authService := services.NewAuthService(userRepo, sessionRepo, cfg)
@@ -45,6 +47,9 @@ func main() {
 	reviewRepo := repositories.NewReviewPostgres(db)
 	reviewService := services.NewReviewService(reviewRepo)
 	reviewHandler := handlers.NewReviewHandler(reviewService)
+
+	facilityRepo := repositories.NewFacilityPostgres(db)
+	facilityHandler := handlers.NewFacilityHandler(facilityRepo)
 
 	bookingRepo := repositories.NewBookingPostgres(db)
 	bookingService := services.NewBookingService(bookingRepo, courtsRepo)
@@ -59,7 +64,7 @@ func main() {
 		AllowCredentials: true,
 	}))
 
-	routes.SetupRoutes(app, courtsHandler, authHandler, reviewHandler, bookingHandler, cfg.JWTAccessSecret, sessionRepo)
+	routes.SetupRoutes(app, courtsHandler, authHandler, reviewHandler, bookingHandler, facilityHandler, uploadHandler, cfg.JWTAccessSecret, sessionRepo)
 
 	log.Printf("🚀 Server berjalan di port %s", cfg.AppPort)
 	if err := app.Listen(":" + cfg.AppPort); err != nil {

@@ -1,4 +1,3 @@
-// lib/courts.ts
 import { Court } from "@/types/court";
 
 interface ApiResponse<T> {
@@ -20,7 +19,7 @@ export async function getCourts(search?: string): Promise<Court[]> {
     throw new Error(result.message || "Gagal mengambil data lapangan");
   }
 
-  return result.data ?? [];
+  return (result.data ?? []).filter((court) => court.is_active);
 }
 
 export async function getCourtById(id: string): Promise<Court | null> {
@@ -39,4 +38,19 @@ export async function getCourtById(id: string): Promise<Court | null> {
   }
 
   return result.data;
+}
+
+export async function getMyCourts(token: string): Promise<Court[]> {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/courts/owner/mine`,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+      cache: "no-store",
+    },
+  );
+
+  if (!res.ok) return [];
+
+  const result: ApiResponse<Court[]> = await res.json();
+  return result.data ?? [];
 }

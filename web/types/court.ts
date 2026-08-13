@@ -8,6 +8,9 @@ export interface Court {
   court_count: number;
   owner_id: string;
   owner_name: string;
+  is_active: boolean;
+  average_rating: number;
+  total_reviews: number;
   images: CourtImage[];
   facilities: CourtFacility[];
 }
@@ -24,4 +27,14 @@ export interface CourtFacility {
   id: string;
   name: string;
   icon: string;
+}
+
+export interface CreateCourtInput {
+  name: string;
+  description: string;
+  location: string;
+  price: number;
+  type: string;
+  court_count: number;
+  facility_ids: string[];
 }
