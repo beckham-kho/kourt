@@ -30,7 +30,7 @@ export async function getAccessToken(): Promise<string | null> {
 
 export async function getCurrentUser(): Promise<CurrentUser | null> {
   const cookieStore = await cookies();
-  const token = cookieStore.get("access_token")?.value;
+  let token = cookieStore.get("access_token")?.value;
 
   if (!token) {
     return null;
@@ -44,7 +44,23 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
   }
 
   if (decoded.exp * 1000 < Date.now()) {
-    return null;
+    const refreshed = await fetch(
+      `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/refresh`,
+      {
+        method: "POST",
+        headers: {
+          Cookie: `refresh_token=${cookieStore.get("refresh_token")?.value}`,
+        },
+      },
+    );
+
+    if (!refreshed.ok) {
+      return null;
+    }
+
+    token = (await cookies()).get("access_token")?.value;
+    if (!token) return null;
+    decoded = jwtDecode<TokenPayload>(token);
   }
 
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
