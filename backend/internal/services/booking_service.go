@@ -62,8 +62,8 @@ func (s *BookingService) GetOwnerBookings(ownerID string, status string) ([]mode
 	return s.bookingRepo.FindByOwnerID(ownerID, status)
 }
 
-func (s *BookingService) GetCustomerBookings(customerID string) ([]models.Booking, error) {
-	return s.bookingRepo.FindByCustomerID(customerID)
+func (s *BookingService) GetCustomerBookings(customerID string, status string) ([]models.Booking, error) {
+	return s.bookingRepo.FindByCustomerID(customerID, status)
 }
 
 func (s *BookingService) GetWeeklySchedule(ownerID string, start, end time.Time) ([]models.Booking, error) {

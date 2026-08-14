@@ -20,6 +20,8 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getCurrentUser } from "@/lib/auth-server";
+import Link from "next/link";
+import BookingButton from "@/components/booking/booking-button";
 
 const FACILITY_ICONS: Record<string, LucideIcon> = {
   "shower-head": ShowerHead,
@@ -56,6 +58,10 @@ export default async function CourtDetailPage({
   }
 
   const user = await getCurrentUser();
+
+  const bookingHref = user
+    ? `/courts/${court.id}/book`
+    : `/login?redirect=/courts/${court.id}/book`;
 
   return (
     <>
@@ -122,7 +128,13 @@ export default async function CourtDetailPage({
         <div className="w-full hidden md:block flex-1">
           <div className="sticky top-20 flex flex-col p-5 bg-accent shadow-lg gap-3">
             <p className="text-2xl font-bold">{formatPrice(court.price)}/jam</p>
-            <Button className="p-2 w-full">Pesan Sekarang</Button>
+            <BookingButton
+              courtId={court.id}
+              isLoggedIn={!!user}
+              className="p-2 w-full"
+            >
+              Booking Sekarang
+            </BookingButton>
             <Button className="p-2 w-full" variant="outline">
               Hubungi Pemilik
             </Button>
@@ -141,7 +153,13 @@ export default async function CourtDetailPage({
             <Button className="flex-1 min-w-0 p-2" variant="outline">
               Hubungi Pemilik
             </Button>
-            <Button className="flex-1 min-w-0 p-2">Pesan Sekarang</Button>
+            <BookingButton
+              courtId={court.id}
+              isLoggedIn={!!user}
+              className="flex-1 min-w-0 p-2"
+            >
+              Booking Sekarang
+            </BookingButton>
           </div>
         </div>
       </div>

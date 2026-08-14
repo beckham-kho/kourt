@@ -57,8 +57,9 @@ func (h *BookingHandler) GetOwnerBookings(c *fiber.Ctx) error {
 
 func (h *BookingHandler) GetMyBookings(c *fiber.Ctx) error {
 	customerID := c.Locals("user_id").(string)
+	status := c.Query("status")
 
-	bookings, err := h.service.GetCustomerBookings(customerID)
+	bookings, err := h.service.GetCustomerBookings(customerID, status)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false, "message": "Gagal mengambil data booking",

@@ -64,16 +64,24 @@ func (r *BookingPostgres) FindByOwnerID(ownerID string, status string) ([]models
 	return r.scanBookings(query, args...)
 }
 
-func (r *BookingPostgres) FindByCustomerID(customerID string) ([]models.Booking, error) {
+func (r *BookingPostgres) FindByCustomerID(customerID string, status string) ([]models.Booking, error) {
 	query := `
 		SELECT b.id, b.court_id, c.name, b.customer_id, u.name, b.start_time, b.end_time, b.status, b.total_price, b.created_at
 		FROM bookings b
 		JOIN courts c ON c.id = b.court_id
 		JOIN users u ON u.id = b.customer_id
 		WHERE b.customer_id = $1
-		ORDER BY b.start_time DESC
 	`
-	return r.scanBookings(query, customerID)
+
+	args := []interface{}{customerID}
+
+	if status != "" {
+		query += ` AND b.status = $2`
+		args = append(args, status)
+	}
+	query += ` ORDER BY b.start_time DESC`
+
+	return r.scanBookings(query, args...)
 }
 
 func (r *BookingPostgres) FindByOwnerIDAndDateRange(ownerID string, start, end time.Time) ([]models.Booking, error) {
