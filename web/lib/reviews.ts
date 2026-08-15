@@ -23,6 +23,21 @@ export async function getCourtReviews(courtId: string): Promise<Review[]> {
   return result.data ?? [];
 }
 
+export async function getOwnerReviews(token: string): Promise<Review[]> {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/courts/owner/reviews`,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+      cache: "no-store",
+    },
+  );
+
+  if (!res.ok) return [];
+
+  const result: ApiResponse<Review[]> = await res.json();
+  return result.data ?? [];
+}
+
 export async function getCourtRatingSummary(
   courtId: string,
 ): Promise<RatingSummary | null> {

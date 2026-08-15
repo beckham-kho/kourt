@@ -33,6 +33,21 @@ func (h *ReviewHandler) GetCourtReviews(c *fiber.Ctx) error {
 	})
 }
 
+func (h *ReviewHandler) GetOwnerReviews(c *fiber.Ctx) error {
+	ownerID := c.Locals("user_id").(string)
+
+	reviews, err := h.service.GetReviewsByOwnerID(ownerID)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"success": false, "message": "Gagal mengambil data review",
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"success": true, "message": "Berhasil mengambil review", "data": reviews,
+	})
+}
+
 func (h *ReviewHandler) GetCourtRatingSummary(c *fiber.Ctx) error {
 	courtID := c.Params("id")
 

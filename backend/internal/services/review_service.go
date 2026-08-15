@@ -17,6 +17,10 @@ func (s *ReviewService) GetReviewsByCourtID(courtID string) ([]models.Review, er
 	return s.repo.FindByCourtID(courtID)
 }
 
+func (s *ReviewService) GetReviewsByOwnerID(ownerID string) ([]models.Review, error) {
+	return s.repo.FindByOwnerID(ownerID)
+}
+
 func (s *ReviewService) GetRatingSummary(courtID string) (*models.RatingSummary, error) {
 	return s.repo.GetRatingSummary(courtID)
 }

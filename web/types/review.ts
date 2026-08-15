@@ -7,6 +7,7 @@ export interface ReviewCategoryRating {
 export interface Review {
   id: string;
   court_id: string;
+  court_name: string;
   user_id: string;
   user_name: string;
   rating: number;

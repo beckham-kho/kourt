@@ -53,6 +53,34 @@ func (r *ReviewPostgres) FindByCourtID(courtID string) ([]models.Review, error) 
 	return reviews, nil
 }
 
+func (r *ReviewPostgres) FindByOwnerID(ownerID string) ([]models.Review, error) {
+	query := `
+		SELECT r.id, r.court_id, c.name, r.user_id, u.name, r.rating, r.comment, r.created_at
+		FROM reviews r
+		JOIN courts c ON c.id = r.court_id
+		JOIN users u ON u.id = r.user_id
+		WHERE c.owner_id = $1
+		ORDER BY r.created_at DESC
+	`
+
+	rows, err := r.db.Query(query, ownerID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	reviews := []models.Review{}
+	for rows.Next() {
+		var rv models.Review
+		if err := rows.Scan(&rv.ID, &rv.CourtID, &rv.CourtName, &rv.UserID, &rv.UserName, &rv.Rating, &rv.Comment, &rv.CreatedAt); err != nil {
+			return nil, err
+		}
+		reviews = append(reviews, rv)
+	}
+
+	return reviews, nil
+}
+
 func (r *ReviewPostgres) getCategoryRatings(reviewID string) ([]models.ReviewCategoryRating, error) {
 	query := `
 		SELECT rc.id, rc.name, rcr.score

@@ -20,9 +20,10 @@ func SetupRoutes(app *fiber.App, courtHandler *handlers.CourtsHandler, authHandl
 
 	courts := api.Group("/courts")
 	courts.Get("/", courtHandler.GetAllCourts)
-	courts.Get("/:id", courtHandler.GetCourtByID)
 	courts.Get("/owner/mine", middleware.RequireAuth(jwtAccessSecret, sessionRepo), middleware.RequireRole("renter"), courtHandler.GetMyCourts)
+	courts.Get("/owner/reviews", middleware.RequireAuth(jwtAccessSecret, sessionRepo), middleware.RequireRole("renter"), reviewHandler.GetOwnerReviews)
 	courts.Post("/", middleware.RequireAuth(jwtAccessSecret, sessionRepo), middleware.RequireRole("renter"), courtHandler.CreateCourt)
+	courts.Get("/:id", courtHandler.GetCourtByID)
 	courts.Delete("/:id", middleware.RequireAuth(jwtAccessSecret, sessionRepo), middleware.RequireRole("renter"), courtHandler.DeleteCourt)
 	courts.Put("/:id", middleware.RequireAuth(jwtAccessSecret, sessionRepo), middleware.RequireRole("renter"), courtHandler.UpdateCourt)
 	courts.Post("/:id/image", middleware.RequireAuth(jwtAccessSecret, sessionRepo), middleware.RequireRole("renter"), courtHandler.UploadCourtImage)
