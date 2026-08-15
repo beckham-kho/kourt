@@ -32,7 +32,7 @@ export default async function BookingsPage({
       <h1 className="text-2xl font-bold mt-4 mb-3">Booking Masuk</h1>
 
       <Tabs defaultValue={activeStatus}>
-        <TabsList className="w-full overflow-x-auto justify-start sm:justify-center">
+        <TabsList className="w-full justify-start sm:justify-center">
           {STATUS_TABS.map((tab) => (
             <TabsTrigger
               key={tab.value}

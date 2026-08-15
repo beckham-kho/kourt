@@ -22,15 +22,9 @@ interface ApiResponse<T> {
   data: T;
 }
 
-export async function getAccessToken(): Promise<string | null> {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("access_token")?.value;
-  return token ?? null;
-}
-
 export async function getCurrentUser(): Promise<CurrentUser | null> {
   const cookieStore = await cookies();
-  let token = cookieStore.get("access_token")?.value;
+  const token = cookieStore.get("access_token")?.value;
 
   if (!token) {
     return null;
@@ -44,23 +38,7 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
   }
 
   if (decoded.exp * 1000 < Date.now()) {
-    const refreshed = await fetch(
-      `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/refresh`,
-      {
-        method: "POST",
-        headers: {
-          Cookie: `refresh_token=${cookieStore.get("refresh_token")?.value}`,
-        },
-      },
-    );
-
-    if (!refreshed.ok) {
-      return null;
-    }
-
-    token = (await cookies()).get("access_token")?.value;
-    if (!token) return null;
-    decoded = jwtDecode<TokenPayload>(token);
+    return null;
   }
 
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
@@ -81,4 +59,10 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
   }> = await res.json();
 
   return { ...decoded, ...result.data };
+}
+
+export async function getAccessToken(): Promise<string | null> {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("access_token")?.value;
+  return token ?? null;
 }

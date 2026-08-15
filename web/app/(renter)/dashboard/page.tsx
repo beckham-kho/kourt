@@ -1,8 +1,6 @@
 import StatCard from "@/components/dashboard/stat-card";
-import PendingBookingCard from "@/components/dashboard/pending-booking-card";
 import WeeklySchedule from "@/components/dashboard/weekly-schedule";
 import { CalendarCheck, Wallet, Building2, Star } from "lucide-react";
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getAccessToken } from "@/lib/auth-server";
 import {
@@ -76,36 +74,6 @@ export default async function DashboardPage() {
         {statCards.map((stat) => (
           <StatCard key={stat.title} {...stat} />
         ))}
-      </section>
-
-      <section className="mt-8">
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="text-xl font-semibold">Perlu Konfirmasi</h2>
-          <Link
-            href="/dashboard/bookings"
-            className="text-sm text-primary hover:underline"
-          >
-            Lihat semua
-          </Link>
-        </div>
-        <div className="flex flex-col gap-3">
-          {pendingBookings.length > 0 ? (
-            pendingBookings.map((booking) => (
-              <PendingBookingCard
-                key={booking.id}
-                id={booking.id}
-                customerName={booking.customer_name}
-                courtName={booking.court_name}
-                startTime={booking.start_time}
-                endTime={booking.end_time}
-              />
-            ))
-          ) : (
-            <p className="text-sm text-muted-foreground">
-              Tidak ada booking yang perlu dikonfirmasi.
-            </p>
-          )}
-        </div>
       </section>
 
       <section className="mt-8">
